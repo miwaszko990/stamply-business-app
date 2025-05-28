@@ -1,15 +1,77 @@
 import { StatusBar } from 'expo-status-bar';
 import { Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { PaperProvider } from 'react-native-paper';
 import 'nativewind';
+
+// Import screens
+import LoginScreen from './screens/Auth/Login';
+import RegisterScreen from './screens/Auth/Register';
+import Step1CompanyInfo from './screens/Onboarding/Step1CompanyInfo';
+import Step2Design from './screens/Onboarding/Step2Design';
+import Step3Links from './screens/Onboarding/Step3Links';
+import Step4Program from './screens/Onboarding/Step4Program';
+import Step5Preview from './screens/Onboarding/Step5Preview';
+
+// Import context
+import { AuthProvider } from './context/AuthContext';
+
+// Create stack navigators
+const AuthStack = createNativeStackNavigator();
+const OnboardingStack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
+
+// Onboarding Navigator
+const OnboardingNavigator = () => {
+  return (
+    <OnboardingStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <OnboardingStack.Screen name="Step1CompanyInfo" component={Step1CompanyInfo} />
+      <OnboardingStack.Screen name="Step2Design" component={Step2Design} />
+      <OnboardingStack.Screen name="Step3Links" component={Step3Links} />
+      <OnboardingStack.Screen name="Step4Program" component={Step4Program} />
+      <OnboardingStack.Screen name="Step5Preview" component={Step5Preview} />
+    </OnboardingStack.Navigator>
+  );
+};
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-xl font-bold text-blue-500">Welcome to Stamply Business!</Text>
-        <StatusBar style="auto" />
-      </View>
-    </SafeAreaProvider>
+    <PaperProvider>
+      <AuthProvider>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <RootStack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <RootStack.Screen name="Auth" component={AuthNavigator} />
+              <RootStack.Screen name="Onboarding" component={OnboardingNavigator} />
+            </RootStack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </AuthProvider>
+    </PaperProvider>
   );
 }
+
+// Auth Navigator
+const AuthNavigator = () => {
+  return (
+    <AuthStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+      <AuthStack.Screen name="Register" component={RegisterScreen} />
+    </AuthStack.Navigator>
+  );
+};
