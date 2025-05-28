@@ -20,6 +20,7 @@ interface LinkInfo {
   instagram: string;
   facebook: string;
   twitter: string;
+  booksyLink: string;
 }
 
 interface ProgramInfo {
@@ -68,6 +69,7 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
     instagram: '',
     facebook: '',
     twitter: '',
+    booksyLink: '',
   },
   programInfo: {
     programName: '',

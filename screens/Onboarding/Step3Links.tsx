@@ -1,92 +1,103 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Switch } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useOnboardingStore } from '../../lib/store/onboardingStore';
 
-const Step3Links = () => {
-  const [socialMediaEnabled, setSocialMediaEnabled] = React.useState(false);
-  const [websiteEnabled, setWebsiteEnabled] = React.useState(false);
+const Step3Links = ({ navigation }: any) => {
+  // Get link info from Zustand store
+  const { linkInfo, setLinkInfo } = useOnboardingStore();
+  
+  // Local state
+  const [instagram, setInstagram] = useState(linkInfo.instagram);
+  const [booksyLink, setBooksyLink] = useState(linkInfo.booksyLink);
+  
+  // Handle next button press
+  const handleNext = () => {
+    // Validate Instagram (required)
+    if (!instagram.trim()) {
+      Alert.alert('Missing Information', 'Please enter your Instagram handle');
+      return;
+    }
+    
+    // Format Instagram handle (ensure it starts with @)
+    const formattedInstagram = instagram.startsWith('@') ? instagram : `@${instagram}`;
+    
+    // Save to Zustand store
+    setLinkInfo({
+      ...linkInfo,
+      instagram: formattedInstagram,
+      booksyLink,
+    });
+    
+    // Navigate to the next step
+    navigation.navigate('Step4Program');
+  };
+  
+  // Handle back button press
+  const handleBack = () => {
+    navigation.goBack();
+  };
   
   return (
-    <ScrollView className="flex-1 bg-white">
-      <View className="p-6">
-        <Text className="text-3xl font-bold mb-2 text-center mt-6">Connect Your Business</Text>
-        <Text className="text-gray-500 text-center mb-8">Step 3 of 5</Text>
-        
-        <View className="mb-6 bg-gray-50 p-4 rounded-xl">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-gray-700 font-medium text-lg">Website</Text>
-            <Switch 
-              value={websiteEnabled}
-              onValueChange={setWebsiteEnabled}
-              trackColor={{ false: '#E5E7EB', true: '#3B82F6' }}
-            />
-          </View>
-          
-          {websiteEnabled && (
-            <View>
-              <Text className="text-gray-700 mb-2">Website URL</Text>
+    <SafeAreaView className="flex-1 bg-white">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        className="flex-1"
+      >
+        <ScrollView className="flex-1">
+          <View className="p-6">
+            <Text className="text-3xl font-bold mb-2 text-center mt-6 text-blue-500">Connect Your Business</Text>
+            <Text className="text-gray-500 text-center mb-8">Step 3 of 5</Text>
+            
+            {/* Instagram Handle */}
+            <View className="mb-6">
+              <Text className="text-gray-700 mb-2 font-medium">Instagram Handle <Text className="text-red-500">*</Text></Text>
               <TextInput 
-                className="border border-gray-300 rounded-lg p-3 bg-white"
-                placeholder="https://yourbusiness.com"
+                className="border border-gray-300 rounded-lg p-3 bg-gray-50"
+                placeholder="@yourbusiness"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={instagram}
+                onChangeText={setInstagram}
+              />
+              <Text className="text-gray-500 text-xs mt-1">Your Instagram handle will be displayed on your loyalty card</Text>
+            </View>
+            
+            {/* Booksy Link */}
+            <View className="mb-6">
+              <Text className="text-gray-700 mb-2 font-medium">Booksy Link (Optional)</Text>
+              <TextInput 
+                className="border border-gray-300 rounded-lg p-3 bg-gray-50"
+                placeholder="https://booksy.com/yourbusiness"
                 keyboardType="url"
                 autoCapitalize="none"
+                autoCorrect={false}
+                value={booksyLink}
+                onChangeText={setBooksyLink}
               />
+              <Text className="text-gray-500 text-xs mt-1">Add your Booksy link if you use it for appointments</Text>
             </View>
-          )}
-        </View>
-        
-        <View className="mb-6 bg-gray-50 p-4 rounded-xl">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-gray-700 font-medium text-lg">Social Media</Text>
-            <Switch 
-              value={socialMediaEnabled}
-              onValueChange={setSocialMediaEnabled}
-              trackColor={{ false: '#E5E7EB', true: '#3B82F6' }}
-            />
+            
+            {/* Navigation buttons */}
+            <View className="flex-row justify-between mt-10">
+              <TouchableOpacity 
+                className="bg-gray-200 p-4 rounded-lg w-[48%]"
+                onPress={handleBack}
+              >
+                <Text className="text-center font-bold text-gray-700">Back</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                className="bg-blue-500 p-4 rounded-lg w-[48%]"
+                onPress={handleNext}
+              >
+                <Text className="text-white text-center font-bold">Next</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          
-          {socialMediaEnabled && (
-            <View>
-              <View className="mb-4">
-                <Text className="text-gray-700 mb-2">Instagram</Text>
-                <TextInput 
-                  className="border border-gray-300 rounded-lg p-3 bg-white"
-                  placeholder="@yourbusiness"
-                  autoCapitalize="none"
-                />
-              </View>
-              
-              <View className="mb-4">
-                <Text className="text-gray-700 mb-2">Facebook</Text>
-                <TextInput 
-                  className="border border-gray-300 rounded-lg p-3 bg-white"
-                  placeholder="facebook.com/yourbusiness"
-                  autoCapitalize="none"
-                />
-              </View>
-              
-              <View>
-                <Text className="text-gray-700 mb-2">Twitter</Text>
-                <TextInput 
-                  className="border border-gray-300 rounded-lg p-3 bg-white"
-                  placeholder="@yourbusiness"
-                  autoCapitalize="none"
-                />
-              </View>
-            </View>
-          )}
-        </View>
-        
-        <View className="flex-row justify-between mt-6">
-          <TouchableOpacity className="bg-gray-200 p-4 rounded-lg w-[48%]">
-            <Text className="text-center font-bold text-gray-700">Back</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity className="bg-blue-500 p-4 rounded-lg w-[48%]">
-            <Text className="text-white text-center font-bold">Next</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
