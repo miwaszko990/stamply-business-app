@@ -23,12 +23,15 @@ interface LinkInfo {
   booksyLink: string;
 }
 
+interface Reward {
+  stampNumber: number;
+  description: string;
+}
+
 interface ProgramInfo {
   programName: string;
   stampsRequired: number;
-  rewardType: 'discount' | 'free_item';
-  discountPercentage?: number;
-  freeItemDescription?: string;
+  rewards: Reward[];
 }
 
 interface OnboardingState {
@@ -74,8 +77,10 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
   programInfo: {
     programName: '',
     stampsRequired: 10,
-    rewardType: 'discount',
-    discountPercentage: 20,
+    rewards: [
+      { stampNumber: 5, description: '10% off your purchase' },
+      { stampNumber: 10, description: 'Free item of your choice' }
+    ]
   },
   
   // Company Info Actions
