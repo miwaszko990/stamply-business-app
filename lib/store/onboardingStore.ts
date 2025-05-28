@@ -8,8 +8,11 @@ interface CompanyInfo {
 }
 
 interface DesignInfo {
+  logo: string | null;
   cardStyle: string;
   colorScheme: string;
+  cardBackgroundColor: string;
+  stampColor: string;
 }
 
 interface LinkInfo {
@@ -54,8 +57,11 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
     address: '',
   },
   designInfo: {
+    logo: null,
     cardStyle: 'minimal',
     colorScheme: 'blue',
+    cardBackgroundColor: '#FFFFFF',
+    stampColor: '#3B82F6',
   },
   linkInfo: {
     websiteUrl: '',
